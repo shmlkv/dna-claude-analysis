@@ -1,0 +1,35 @@
+# DNA data files (private!)
+data/*.txt
+data/*.csv
+data/*.zip
+data/*.vcf
+
+# Analysis reports (generated)
+reports/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
