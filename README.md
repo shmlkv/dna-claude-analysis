@@ -213,30 +213,6 @@ See `webpage/STYLE_GUIDE.md` for complete design system:
 - Section structure and IDs
 - Build instructions
 
-### Example Output
-
-![DNA Terminal Demo](webpage/demo.png)
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│ > DNA TERMINAL v1.0              2026-01-06 16:29 | Username   │
-│ [STATUS] [ANCESTRY] [HEALTH] [NUTRITION] [SPORTS] ...         │
-├────────────────────────────────────────────────────────────────┤
-│ // SYSTEM STATUS                                               │
-│ GENOME: 23andMe v5 | SNPs: 640,352 | COVERAGE: 98.2%           │
-│                                                                │
-│ ! MTHFR C677T heterozygous — reduced folate metabolism         │
-│ + ACTN3 RR — sprint/power advantage                            │
-├────────────────────────────────────────────────────────────────┤
-│ // HEALTH                                               [GOOD] │
-│ ┌──────────────┬──────────┬─────────────────────────────────┐  │
-│ │ GENE         │ GENOTYPE │ STATUS                          │  │
-│ ├──────────────┼──────────┼─────────────────────────────────┤  │
-│ │ APOE         │ ε3/ε3    │ TYPICAL RISK                    │  │
-│ │ BRCA1        │ NEGATIVE │ NO VARIANTS DETECTED            │  │
-│ └──────────────┴──────────┴─────────────────────────────────┘  │
-└────────────────────────────────────────────────────────────────┘
-```
 
 ## Complete Workflow
 
