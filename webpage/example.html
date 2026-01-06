@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA TERMINAL v1.0 — DEMO</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --bg-light: #111111;
+            --bg-section: #0d0d0d;
+            --green: #00ff41;
+            --green-dim: #00cc33;
+            --amber: #ffb000;
+            --red: #ff3333;
+            --cyan: #00ffff;
+            --gray: #666666;
+            --gray-light: #888888;
+            --white: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            color: var(--green);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--green-dim);
+            z-index: 1000;
+            padding: 12px 24px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .logo::before {
+            content: ">";
+            margin-right: 8px;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .timestamp {
+            color: var(--gray-light);
+            font-size: 12px;
+        }
+
+        .demo-badge {
+            background: var(--amber);
+            color: var(--bg);
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-left: 12px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+        }
+
+        nav a {
+            color: var(--gray-light);
+            text-decoration: none;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 0;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        main {
+            padding-top: 120px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 24px;
+            padding-right: 24px;
+            padding-bottom: 100px;
+        }
+
+        .status-box {
+            border: 1px solid var(--green-dim);
+            padding: 24px;
+            margin-bottom: 32px;
+            background: var(--bg-section);
+        }
+
+        .status-header {
+            color: var(--green);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--green-dim);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .status-item {
+            display: flex;
+            gap: 8px;
+        }
+
+        .status-label {
+            color: var(--gray-light);
+        }
+
+        .status-value {
+            color: var(--white);
+        }
+
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .alerts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .alerts-column h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--gray);
+        }
+
+        .alerts-column.warnings h3 {
+            color: var(--amber);
+        }
+
+        .alerts-column.highlights h3 {
+            color: var(--cyan);
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .alert-item.warning {
+            color: var(--amber);
+        }
+
+        .alert-item.success {
+            color: var(--cyan);
+        }
+
+        .alert-icon {
+            flex-shrink: 0;
+        }
+
+        .progress-bar {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--gray);
+        }
+
+        .progress-track {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            background: var(--green);
+            height: 8px;
+            flex: 1;
+        }
+
+        .progress-empty {
+            background: var(--gray);
+            height: 8px;
+            flex: 1;
+            opacity: 0.3;
+        }
+
+        .progress-label {
+            color: var(--gray-light);
+            font-size: 12px;
+        }
+
+        section {
+            border: 1px solid var(--gray);
+            margin-bottom: 24px;
+            background: var(--bg-section);
+        }
+
+        .section-header {
+            background: var(--bg-light);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--green);
+        }
+
+        .section-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        .section-badge.good {
+            background: rgba(0, 255, 65, 0.2);
+            color: var(--green);
+        }
+
+        .section-badge.moderate {
+            background: rgba(255, 176, 0, 0.2);
+            color: var(--amber);
+        }
+
+        .section-badge.risk {
+            background: rgba(255, 51, 51, 0.2);
+            color: var(--red);
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px 12px;
+            background: var(--bg-light);
+            color: var(--gray-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 10px;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(102, 102, 102, 0.3);
+            color: var(--white);
+        }
+
+        tr:hover td {
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        .geno {
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        .status-normal { color: var(--green); }
+        .status-moderate { color: var(--amber); }
+        .status-risk { color: var(--red); }
+        .status-info { color: var(--cyan); }
+        .status-na { color: var(--gray); }
+
+        .subsection {
+            margin-bottom: 24px;
+        }
+
+        .subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 12px;
+            color: var(--gray-light);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--gray);
+        }
+
+        .bar-container {
+            margin-bottom: 12px;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .bar-track {
+            height: 16px;
+            background: var(--bg-light);
+            border: 1px solid var(--gray);
+            display: flex;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--green);
+            transition: width 0.5s ease;
+        }
+
+        .bar-fill.amber { background: var(--amber); }
+        .bar-fill.cyan { background: var(--cyan); }
+        .bar-fill.red { background: var(--red); }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+
+        .score-meta {
+            color: var(--gray-light);
+            font-size: 12px;
+        }
+
+        .score-meta strong {
+            color: var(--white);
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .finding {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-light);
+            margin-bottom: 8px;
+            border-left: 3px solid var(--gray);
+        }
+
+        .finding.warning { border-left-color: var(--amber); }
+        .finding.risk { border-left-color: var(--red); }
+        .finding.good { border-left-color: var(--green); }
+        .finding.info { border-left-color: var(--cyan); }
+
+        .finding-icon {
+            font-size: 16px;
+        }
+
+        .finding-content {
+            flex: 1;
+        }
+
+        .finding-gene {
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .finding-desc {
+            color: var(--gray-light);
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .profile-box {
+            background: var(--bg-light);
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--gray);
+        }
+
+        .profile-title {
+            color: var(--cyan);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .profile-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .profile-desc {
+            color: var(--gray-light);
+            font-size: 12px;
+        }
+
+        .two-cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .two-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .disclaimer {
+            background: rgba(255, 176, 0, 0.1);
+            border: 1px solid var(--amber);
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 11px;
+            color: var(--amber);
+        }
+
+        .disclaimer strong {
+            display: block;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border-radius: 0;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--green-dim);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="logo">DNA TERMINAL v1.0<span class="demo-badge">DEMO</span></div>
+            <div class="timestamp">2026-01-06 | Sample_001</div>
+        </div>
+        <nav>
+            <a href="#status">STATUS</a>
+            <a href="#ancestry">ANCESTRY</a>
+            <a href="#health">HEALTH</a>
+            <a href="#nutrition">NUTRITION</a>
+            <a href="#sports">SPORTS</a>
+            <a href="#psychology">PSYCH</a>
+            <a href="#cognitive">COGNITIVE</a>
+            <a href="#longevity">LONGEVITY</a>
+            <a href="#sleep">SLEEP</a>
+            <a href="#immunity">IMMUNITY</a>
+            <a href="#pain">PAIN</a>
+            <a href="#detox">DETOX</a>
+            <a href="#skin">SKIN</a>
+            <a href="#vision">VISION</a>
+            <a href="#traits">TRAITS</a>
+            <a href="#pharma">PHARMA</a>
+            <a href="#carrier">CARRIER</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- STATUS -->
+        <div class="status-box" id="status">
+            <div class="status-header">// SYSTEM STATUS</div>
+
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-label">GENOME:</span>
+                    <span class="status-value">Sample_001</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">SEX:</span>
+                    <span class="status-value">Female (XX)</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">SNPs:</span>
+                    <span class="status-value">650,000+</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">CHIP:</span>
+                    <span class="status-value">Illumina GSA</span>
+                </div>
+            </div>
+
+            <div class="alerts-grid">
+                <div class="alerts-column warnings">
+                    <h3>// ALERTS</h3>
+                    <div class="alert-item warning">
+                        <span class="alert-icon">!</span>
+                        <span>CYP2C19 poor metabolizer</span>
+                    </div>
+                    <div class="alert-item warning">
+                        <span class="alert-icon">!</span>
+                        <span>MTHFR CC - 30% activity</span>
+                    </div>
+                    <div class="alert-item warning">
+                        <span class="alert-icon">!</span>
+                        <span>Lactose intolerance</span>
+                    </div>
+                    <div class="alert-item warning">
+                        <span class="alert-icon">!</span>
+                        <span>VDR reduced - vitamin D needs</span>
+                    </div>
+                </div>
+                <div class="alerts-column highlights">
+                    <h3>// HIGHLIGHTS</h3>
+                    <div class="alert-item success">
+                        <span class="alert-icon">+</span>
+                        <span>APOE e3/e3 - standard risk</span>
+                    </div>
+                    <div class="alert-item success">
+                        <span class="alert-icon">+</span>
+                        <span>Longevity score: 75th percentile</span>
+                    </div>
+                    <div class="alert-item success">
+                        <span class="alert-icon">+</span>
+                        <span>ACTN3 RR - power athlete type</span>
+                    </div>
+                    <div class="alert-item success">
+                        <span class="alert-icon">+</span>
+                        <span>No Factor V Leiden mutation</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-track">
+                    <div class="progress-fill" style="flex: 35;"></div>
+                    <div class="progress-empty" style="flex: 6;"></div>
+                </div>
+                <div class="progress-label">35/41 core SNPs analyzed</div>
+            </div>
+        </div>
+
+        <!-- ANCESTRY -->
+        <section id="ancestry">
+            <div class="section-header">
+                <span class="section-title">// ANCESTRY</span>
+                <span class="section-badge good">MIXED</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div>
+                        <div class="subsection">
+                            <div class="subsection-title">ORIGIN MARKERS</div>
+                            <div class="bar-container">
+                                <div class="bar-label">
+                                    <span>European</span>
+                                    <span class="status-normal">65%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 65%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-label">
+                                    <span>East Asian</span>
+                                    <span>25%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill cyan" style="width: 25%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-label">
+                                    <span>African</span>
+                                    <span>8%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill amber" style="width: 8%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-label">
+                                    <span>Other</span>
+                                    <span>2%</span>
+                                </div>
+                                <div class="bar-track">
+                                    <div class="bar-fill" style="width: 2%; background: var(--gray-light);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="profile-box">
+                            <div class="profile-title">Maternal Haplogroup</div>
+                            <div class="profile-value">H1a</div>
+                            <div class="profile-desc">Most common European mtDNA haplogroup</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">PIGMENTATION MARKERS</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs1426654</td>
+                            <td>SLC24A5</td>
+                            <td class="geno">AG</td>
+                            <td class="status-info">Mixed - intermediate skin tone</td>
+                        </tr>
+                        <tr>
+                            <td>rs16891982</td>
+                            <td>SLC45A2</td>
+                            <td class="geno">CG</td>
+                            <td class="status-info">Mixed pigmentation</td>
+                        </tr>
+                        <tr>
+                            <td>rs12913832</td>
+                            <td>HERC2/OCA2</td>
+                            <td class="geno">AG</td>
+                            <td class="status-info">Green/hazel eyes likely</td>
+                        </tr>
+                        <tr>
+                            <td>rs17822931</td>
+                            <td>ABCC11</td>
+                            <td class="geno">CT</td>
+                            <td class="status-info">Wet earwax</td>
+                        </tr>
+                        <tr>
+                            <td>rs4988235</td>
+                            <td>LCT (MCM6)</td>
+                            <td class="geno">CC</td>
+                            <td class="status-moderate">Lactose intolerant</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- HEALTH SUMMARY -->
+        <section id="health">
+            <div class="section-header">
+                <span class="section-title">// HEALTH RISKS</span>
+                <span class="section-badge moderate">3 MODERATE</span>
+            </div>
+            <div class="section-content">
+                <div class="disclaimer">
+                    <strong>! Important</strong>
+                    This is NOT a medical diagnosis. Risk allele presence does not equal disease. Most diseases are polygenic. Consult a geneticist for medical decisions.
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">CARDIOVASCULAR</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs10757274</td>
+                            <td>9p21</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>Standard CHD risk</td>
+                        </tr>
+                        <tr>
+                            <td>rs1333049</td>
+                            <td>9p21</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>Standard risk</td>
+                        </tr>
+                        <tr>
+                            <td>rs1801133</td>
+                            <td>MTHFR C677T</td>
+                            <td class="geno">TT</td>
+                            <td class="status-risk">HIGH</td>
+                            <td>Homozygote - ~30% activity</td>
+                        </tr>
+                        <tr>
+                            <td>rs6025</td>
+                            <td>Factor V Leiden</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>No mutation</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">DIABETES & METABOLISM</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs7903146</td>
+                            <td>TCF7L2</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">MODERATE</td>
+                            <td>Slightly elevated T2D risk</td>
+                        </tr>
+                        <tr>
+                            <td>rs5219</td>
+                            <td>KCNJ11</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>Standard risk</td>
+                        </tr>
+                        <tr>
+                            <td>rs9939609</td>
+                            <td>FTO</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>No weight tendency</td>
+                        </tr>
+                        <tr>
+                            <td>rs17782313</td>
+                            <td>MC4R</td>
+                            <td class="geno">TC</td>
+                            <td class="status-moderate">MODERATE</td>
+                            <td>Slightly increased appetite</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">NEUROLOGY</div>
+                    <div class="profile-box">
+                        <div class="profile-title">APOE Genotype</div>
+                        <div class="profile-value" style="color: var(--green);">e3/e3</div>
+                        <div class="profile-desc">Standard risk - most common genotype</div>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs429358</td>
+                            <td>APOE (e4)</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>No e4 allele</td>
+                        </tr>
+                        <tr>
+                            <td>rs7412</td>
+                            <td>APOE (e2)</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>No e2 allele</td>
+                        </tr>
+                        <tr>
+                            <td>rs6265</td>
+                            <td>BDNF Val66Met</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">MODERATE</td>
+                            <td>Val/Met - slightly reduced BDNF</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- NUTRITION -->
+        <section id="nutrition">
+            <div class="section-header">
+                <span class="section-title">// NUTRITION & METABOLISM</span>
+                <span class="section-badge moderate">3 ALERTS</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div class="finding warning">
+                        <div class="finding-icon">!</div>
+                        <div class="finding-content">
+                            <div class="finding-gene">LCT (CC) - Lactose intolerant</div>
+                            <div class="finding-desc">Avoid dairy or use lactase supplements</div>
+                        </div>
+                    </div>
+                    <div class="finding warning">
+                        <div class="finding-icon">!</div>
+                        <div class="finding-content">
+                            <div class="finding-gene">MTHFR (TT) - Folate metabolism</div>
+                            <div class="finding-desc">Use methylfolate, avoid folic acid</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">CAFFEINE</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs762551</td>
+                            <td>CYP1A2</td>
+                            <td class="geno">AA</td>
+                            <td class="status-normal">Fast metabolizer - coffee safe</td>
+                        </tr>
+                        <tr>
+                            <td>rs5751876</td>
+                            <td>ADORA2A</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">Low anxiety sensitivity</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">VITAMINS</div>
+                    <table>
+                        <tr>
+                            <th>Vitamin</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr>
+                            <td>D</td>
+                            <td>VDR</td>
+                            <td class="geno">AA</td>
+                            <td class="status-moderate">Reduced</td>
+                            <td>Higher D3 needs</td>
+                        </tr>
+                        <tr>
+                            <td>B9 (Folate)</td>
+                            <td>MTHFR C677T</td>
+                            <td class="geno">TT</td>
+                            <td class="status-risk">30% activity</td>
+                            <td>Methylfolate required</td>
+                        </tr>
+                        <tr>
+                            <td>B12</td>
+                            <td>FUT2</td>
+                            <td class="geno">AG</td>
+                            <td class="status-normal">Normal</td>
+                            <td>Standard intake</td>
+                        </tr>
+                        <tr>
+                            <td>A</td>
+                            <td>BCMO1</td>
+                            <td class="geno">TT</td>
+                            <td class="status-risk">Poor conversion</td>
+                            <td>Use retinol, not beta-carotene</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">TASTE</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Trait</th>
+                        </tr>
+                        <tr>
+                            <td>rs713598</td>
+                            <td>TAS2R38</td>
+                            <td class="geno">CG</td>
+                            <td class="status-info">Medium taster</td>
+                        </tr>
+                        <tr>
+                            <td>rs72921001</td>
+                            <td>OR6A2</td>
+                            <td class="geno">AA</td>
+                            <td class="status-moderate">Cilantro tastes soapy</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPORTS -->
+        <section id="sports">
+            <div class="section-header">
+                <span class="section-title">// SPORTS & FITNESS</span>
+                <span class="section-badge good">POWER</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div class="profile-box">
+                        <div class="profile-title">Athlete Profile</div>
+                        <div class="profile-value">Power/Sprint</div>
+                        <div class="profile-desc">Power-dominant with fast-twitch muscle fibers</div>
+                    </div>
+                    <div class="profile-box">
+                        <div class="profile-title">VO2max Potential</div>
+                        <div class="profile-value" style="color: var(--amber);">62%</div>
+                        <div class="profile-desc">Average endurance potential</div>
+                    </div>
+                </div>
+
+                <div class="two-cols" style="margin-bottom: 24px;">
+                    <div>
+                        <div class="bar-container">
+                            <div class="bar-label">
+                                <span>Power potential</span>
+                                <span class="status-normal">85%</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="bar-container">
+                            <div class="bar-label">
+                                <span>Endurance potential</span>
+                                <span>45%</span>
+                            </div>
+                            <div class="bar-track">
+                                <div class="bar-fill amber" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">MUSCLE FIBER TYPE</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs1815739</td>
+                            <td>ACTN3</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">RR - Sprint/power athlete type</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">RECOVERY & INJURY</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs1800629</td>
+                            <td>TNF-a</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Fast recovery</td>
+                        </tr>
+                        <tr>
+                            <td>rs4880</td>
+                            <td>SOD2</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Average oxidative protection</td>
+                        </tr>
+                        <tr>
+                            <td>rs12722</td>
+                            <td>COL5A1</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">Normal tendon strength</td>
+                        </tr>
+                        <tr>
+                            <td>rs1800012</td>
+                            <td>COL1A1</td>
+                            <td class="geno">GG</td>
+                            <td class="status-moderate">Slightly elevated ligament risk</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PSYCHOLOGY -->
+        <section id="psychology">
+            <div class="section-header">
+                <span class="section-title">// PSYCHOLOGY & BEHAVIOR</span>
+                <span class="section-badge good">WARRIOR</span>
+            </div>
+            <div class="section-content">
+                <div class="profile-box">
+                    <div class="profile-title">COMT Type</div>
+                    <div class="profile-value">Warrior (Val/Val)</div>
+                    <div class="profile-desc">Fast dopamine degradation. Better performance under stress. May need more stimulation in calm environments.</div>
+                </div>
+
+                <div class="two-cols" style="margin-bottom: 24px;">
+                    <div class="finding good">
+                        <div class="finding-icon">+</div>
+                        <div class="finding-content">
+                            <div class="finding-gene">COMT Val/Val</div>
+                            <div class="finding-desc">Stress resilient</div>
+                        </div>
+                    </div>
+                    <div class="finding good">
+                        <div class="finding-icon">+</div>
+                        <div class="finding-content">
+                            <div class="finding-gene">5-HTTLPR Long</div>
+                            <div class="finding-desc">Lower anxiety tendency</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">NEUROTRANSMITTER SYSTEMS</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>System</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs4680</td>
+                            <td>COMT</td>
+                            <td class="geno">GG</td>
+                            <td>Dopamine</td>
+                            <td class="status-info">Val/Val - fast breakdown</td>
+                        </tr>
+                        <tr>
+                            <td>rs1800497</td>
+                            <td>DRD2/ANKK1</td>
+                            <td class="geno">GG</td>
+                            <td>Dopamine</td>
+                            <td class="status-normal">Normal D2 receptor density</td>
+                        </tr>
+                        <tr>
+                            <td>rs6295</td>
+                            <td>HTR1A</td>
+                            <td class="geno">CC</td>
+                            <td>Serotonin</td>
+                            <td class="status-normal">Normal serotonin signaling</td>
+                        </tr>
+                        <tr>
+                            <td>rs53576</td>
+                            <td>OXTR</td>
+                            <td class="geno">GG</td>
+                            <td>Oxytocin</td>
+                            <td class="status-normal">High empathy</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- COGNITIVE -->
+        <section id="cognitive">
+            <div class="section-header">
+                <span class="section-title">// COGNITIVE ABILITIES</span>
+                <span class="section-badge good">NORMAL</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div class="profile-box">
+                        <div class="profile-title">COMT Profile</div>
+                        <div class="profile-value">Warrior (Val/Val)</div>
+                        <div class="profile-desc">Better performance under pressure, may need extra focus in low-stress situations.</div>
+                    </div>
+                    <div class="profile-box">
+                        <div class="profile-title">APOE Cognitive Risk</div>
+                        <div class="profile-value" style="color: var(--green);">e3/e3 - Standard</div>
+                        <div class="profile-desc">Normal cognitive aging trajectory</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">MEMORY</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>rs17070145</td>
+                            <td>KIBRA</td>
+                            <td class="geno">CT</td>
+                            <td class="status-normal">Good episodic memory</td>
+                        </tr>
+                        <tr>
+                            <td>rs4680</td>
+                            <td>COMT</td>
+                            <td class="geno">GG</td>
+                            <td class="status-info">Better under stress</td>
+                        </tr>
+                        <tr>
+                            <td>rs6265</td>
+                            <td>BDNF</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Slightly reduced plasticity</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- LONGEVITY -->
+        <section id="longevity">
+            <div class="section-header">
+                <span class="section-title">// LONGEVITY & AGING</span>
+                <span class="section-badge good">75th PERCENTILE</span>
+            </div>
+            <div class="section-content">
+                <div class="score-display">
+                    <div class="score-value">7.5</div>
+                    <div class="score-meta">
+                        <strong>Good longevity genetics</strong>
+                        Above average - 75th percentile
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">KEY LONGEVITY MARKERS</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Effect</th>
+                        </tr>
+                        <tr>
+                            <td>rs2802292</td>
+                            <td>FOXO3</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">BENEFICIAL</td>
+                            <td>+2 years longevity effect</td>
+                        </tr>
+                        <tr>
+                            <td>rs9536314</td>
+                            <td>KLOTHO</td>
+                            <td class="geno">GT</td>
+                            <td class="status-normal">BENEFICIAL</td>
+                            <td>KL-VS heterozygote - optimal</td>
+                        </tr>
+                        <tr>
+                            <td>rs10936599</td>
+                            <td>TERC</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">MODERATE</td>
+                            <td>Average telomere length</td>
+                        </tr>
+                        <tr>
+                            <td>rs2736100</td>
+                            <td>TERT</td>
+                            <td class="geno">AA</td>
+                            <td class="status-normal">BENEFICIAL</td>
+                            <td>Higher telomerase activity</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLEEP -->
+        <section id="sleep">
+            <div class="section-header">
+                <span class="section-title">// SLEEP & CHRONOTYPE</span>
+                <span class="section-badge moderate">NIGHT OWL</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div class="profile-box">
+                        <div class="profile-title">Chronotype</div>
+                        <div class="profile-value">Night Owl</div>
+                        <div class="profile-desc">Evening chronotype - naturally stay up late, most alert in evening</div>
+                    </div>
+                    <div class="profile-box">
+                        <div class="profile-title">Sleep Quality Score</div>
+                        <div class="profile-value">7/10</div>
+                        <div class="profile-desc">Good genetic sleep quality predisposition</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">SLEEP MARKERS</div>
+                    <table>
+                        <tr>
+                            <th>Category</th>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Interpretation</th>
+                        </tr>
+                        <tr>
+                            <td>Chronotype</td>
+                            <td>rs228697</td>
+                            <td>PER3</td>
+                            <td class="geno">GG</td>
+                            <td class="status-info">Evening preference</td>
+                        </tr>
+                        <tr>
+                            <td>Sleep Depth</td>
+                            <td>rs73598374</td>
+                            <td>ADA</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Light sleeper - sensitive</td>
+                        </tr>
+                        <tr>
+                            <td>Duration</td>
+                            <td>rs1823125</td>
+                            <td>PAX8</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Normal 7-8 hours need</td>
+                        </tr>
+                        <tr>
+                            <td>Insomnia Risk</td>
+                            <td>rs10830963</td>
+                            <td>MTNR1B</td>
+                            <td class="geno">CG</td>
+                            <td class="status-moderate">Slightly elevated</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMMUNITY -->
+        <section id="immunity">
+            <div class="section-header">
+                <span class="section-title">// IMMUNITY</span>
+                <span class="section-badge good">NORMAL</span>
+            </div>
+            <div class="section-content">
+                <div class="profile-box">
+                    <div class="profile-title">Inflammatory Profile</div>
+                    <div class="profile-value" style="color: var(--green);">Balanced</div>
+                    <div class="profile-desc">Normal inflammatory response markers</div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">CYTOKINES</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Effect</th>
+                        </tr>
+                        <tr>
+                            <td>rs1800629</td>
+                            <td>TNF-alpha</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>Standard TNF-alpha levels</td>
+                        </tr>
+                        <tr>
+                            <td>rs1800795</td>
+                            <td>IL-6</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>Standard IL-6 levels</td>
+                        </tr>
+                        <tr>
+                            <td>rs16944</td>
+                            <td>IL-1beta</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">NORMAL</td>
+                            <td>Standard IL-1beta</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">CELIAC RISK (HLA-DQ)</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>rs2187668</td>
+                            <td>HLA-DQ2.5</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Carrier - monitor gluten</td>
+                        </tr>
+                        <tr>
+                            <td>rs7454108</td>
+                            <td>HLA-DQ8</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">Low risk</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAIN -->
+        <section id="pain">
+            <div class="section-header">
+                <span class="section-title">// PAIN SENSITIVITY</span>
+                <span class="section-badge good">LOW SENSITIVITY</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div class="profile-box">
+                        <div class="profile-title">Pain Profile (COMT)</div>
+                        <div class="profile-value" style="color: var(--green);">Warrior (Val/Val)</div>
+                        <div class="profile-desc">Low pain sensitivity, high stress resistance. May need lower analgesic doses.</div>
+                    </div>
+                    <div class="profile-box">
+                        <div class="profile-title">Migraine Risk</div>
+                        <div class="profile-value" style="color: var(--green);">LOW</div>
+                        <div class="profile-desc">No elevated genetic risk markers</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">PAIN MARKERS</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Effect</th>
+                        </tr>
+                        <tr>
+                            <td>rs4680</td>
+                            <td>COMT</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Low pain sensitivity</td>
+                        </tr>
+                        <tr>
+                            <td>rs6746030</td>
+                            <td>SCN9A</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Higher pain threshold</td>
+                        </tr>
+                        <tr>
+                            <td>rs1835740</td>
+                            <td>MTDH</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">Normal migraine risk</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETOX -->
+        <section id="detox">
+            <div class="section-header">
+                <span class="section-title">// DETOXIFICATION</span>
+                <span class="section-badge risk">MTHFR ALERT</span>
+            </div>
+            <div class="section-content">
+                <div class="finding risk">
+                    <div class="finding-icon">!!</div>
+                    <div class="finding-content">
+                        <div class="finding-gene">MTHFR C677T (TT) - Homozygote</div>
+                        <div class="finding-desc">~30% enzyme activity. Use methylfolate, methyl-B12, avoid folic acid fortified foods.</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">METHYLATION (MTHFR)</div>
+                    <div class="profile-box">
+                        <div class="profile-title">MTHFR Status</div>
+                        <div class="profile-value" style="color: var(--red);">Significant impairment</div>
+                        <div class="profile-desc">C677T homozygote - ~30% activity. Requires methylated B vitamins.</div>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Variant</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>rs1801133</td>
+                            <td>C677T</td>
+                            <td class="geno">TT</td>
+                            <td class="status-risk">Homozygote - 30%</td>
+                        </tr>
+                        <tr>
+                            <td>rs1801131</td>
+                            <td>A1298C</td>
+                            <td class="geno">AA</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">CYP450 PHASE I</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>rs762551</td>
+                            <td>CYP1A2</td>
+                            <td class="geno">AA</td>
+                            <td class="status-normal">Fast caffeine metabolizer</td>
+                        </tr>
+                        <tr>
+                            <td>rs1799853</td>
+                            <td>CYP2C9*2</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">Normal metabolizer</td>
+                        </tr>
+                        <tr>
+                            <td>rs1056836</td>
+                            <td>CYP1B1</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">Normal estrogen metabolism</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKIN -->
+        <section id="skin">
+            <div class="section-header">
+                <span class="section-title">// SKIN</span>
+                <span class="section-badge good">NORMAL</span>
+            </div>
+            <div class="section-content">
+                <div class="subsection">
+                    <div class="subsection-title">SKIN MARKERS</div>
+                    <table>
+                        <tr>
+                            <th>Category</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>Collagen</td>
+                            <td>COL1A1</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Normal structure</td>
+                        </tr>
+                        <tr>
+                            <td>UV sensitivity</td>
+                            <td>MC1R</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Moderate - use SPF 30+</td>
+                        </tr>
+                        <tr>
+                            <td>Aging</td>
+                            <td>MMP1</td>
+                            <td class="geno">II</td>
+                            <td class="status-normal">Normal collagen turnover</td>
+                        </tr>
+                        <tr>
+                            <td>Acne</td>
+                            <td>DDB2</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Low acne risk</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISION -->
+        <section id="vision">
+            <div class="section-header">
+                <span class="section-title">// VISION & HEARING</span>
+                <span class="section-badge moderate">1 MODERATE</span>
+            </div>
+            <div class="section-content">
+                <div class="subsection">
+                    <div class="subsection-title">VISION</div>
+                    <table>
+                        <tr>
+                            <th>Condition</th>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Risk</th>
+                        </tr>
+                        <tr>
+                            <td>AMD</td>
+                            <td>rs1061170</td>
+                            <td>CFH</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">Low</td>
+                        </tr>
+                        <tr>
+                            <td>AMD</td>
+                            <td>rs10490924</td>
+                            <td>ARMS2</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Low</td>
+                        </tr>
+                        <tr>
+                            <td>Glaucoma</td>
+                            <td>rs10483727</td>
+                            <td>SIX6</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">MODERATE</td>
+                        </tr>
+                        <tr>
+                            <td>Myopia</td>
+                            <td>rs634990</td>
+                            <td>RASGRF1</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">LOW</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">HEARING</div>
+                    <table>
+                        <tr>
+                            <th>Condition</th>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Risk</th>
+                        </tr>
+                        <tr>
+                            <td>Noise-Induced Loss</td>
+                            <td>rs4880</td>
+                            <td>SOD2</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Moderate - use ear protection</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TRAITS -->
+        <section id="traits">
+            <div class="section-header">
+                <span class="section-title">// PHYSICAL TRAITS</span>
+            </div>
+            <div class="section-content">
+                <div class="two-cols">
+                    <div class="profile-box">
+                        <div class="profile-title">Eye Color Prediction</div>
+                        <div class="profile-value" style="color: var(--green);">Green/Hazel</div>
+                        <div class="profile-desc">55% green/hazel, 30% brown, 15% blue</div>
+                    </div>
+                    <div class="profile-box">
+                        <div class="profile-title">Hair Color</div>
+                        <div class="profile-value">Dark Brown</div>
+                        <div class="profile-desc">High confidence</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">KEY TRAITS</div>
+                    <table>
+                        <tr>
+                            <th>Trait</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Result</th>
+                        </tr>
+                        <tr>
+                            <td>Hair thickness</td>
+                            <td>EDAR</td>
+                            <td class="geno">CT</td>
+                            <td>Average thickness</td>
+                        </tr>
+                        <tr>
+                            <td>Skin</td>
+                            <td>SLC24A5</td>
+                            <td class="geno">AG</td>
+                            <td>Medium tone</td>
+                        </tr>
+                        <tr>
+                            <td>Earwax</td>
+                            <td>ABCC11</td>
+                            <td class="geno">CT</td>
+                            <td>Wet type</td>
+                        </tr>
+                        <tr>
+                            <td>Bitter taste</td>
+                            <td>TAS2R38</td>
+                            <td class="geno">CG</td>
+                            <td class="status-info">Medium taster</td>
+                        </tr>
+                        <tr>
+                            <td>Cilantro</td>
+                            <td>OR6A2</td>
+                            <td class="geno">AA</td>
+                            <td class="status-moderate">Soapy taste</td>
+                        </tr>
+                        <tr>
+                            <td>Photic sneeze</td>
+                            <td>ZEB2</td>
+                            <td class="geno">CT</td>
+                            <td>Mild ACHOO reflex</td>
+                        </tr>
+                        <tr>
+                            <td>Freckles</td>
+                            <td>MC1R</td>
+                            <td class="geno">CT</td>
+                            <td>Some freckles likely</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHARMA -->
+        <section id="pharma">
+            <div class="section-header">
+                <span class="section-title">// PHARMACOGENOMICS</span>
+                <span class="section-badge risk">1 CRITICAL</span>
+            </div>
+            <div class="section-content">
+                <div class="finding risk">
+                    <div class="finding-icon">!!</div>
+                    <div class="finding-content">
+                        <div class="finding-gene">CYP2C19*2 (AA) - Poor metabolizer</div>
+                        <div class="finding-desc">Cannot activate clopidogrel (Plavix). Alternative antiplatelet therapy required. Also affects some PPIs and SSRIs.</div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">DRUG METABOLISM</div>
+                    <table>
+                        <tr>
+                            <th>SNP</th>
+                            <th>Gene</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                            <th>Affected Drugs</th>
+                        </tr>
+                        <tr>
+                            <td>rs4244285</td>
+                            <td>CYP2C19*2</td>
+                            <td class="geno">AA</td>
+                            <td class="status-risk">Poor</td>
+                            <td>Clopidogrel, PPIs, SSRIs</td>
+                        </tr>
+                        <tr>
+                            <td>rs1799853</td>
+                            <td>CYP2C9*2</td>
+                            <td class="geno">CC</td>
+                            <td class="status-normal">Normal</td>
+                            <td>Warfarin, NSAIDs</td>
+                        </tr>
+                        <tr>
+                            <td>rs1057910</td>
+                            <td>CYP2C9*3</td>
+                            <td class="geno">AA</td>
+                            <td class="status-normal">Normal</td>
+                            <td>Warfarin, NSAIDs</td>
+                        </tr>
+                        <tr>
+                            <td>rs9923231</td>
+                            <td>VKORC1</td>
+                            <td class="geno">CT</td>
+                            <td class="status-moderate">Intermediate</td>
+                            <td>Warfarin (adjust dose)</td>
+                        </tr>
+                        <tr>
+                            <td>rs4149056</td>
+                            <td>SLCO1B1</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">Normal</td>
+                            <td>Statins (normal risk)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARRIER -->
+        <section id="carrier">
+            <div class="section-header">
+                <span class="section-title">// CARRIER STATUS</span>
+                <span class="section-badge moderate">1 CARRIER</span>
+            </div>
+            <div class="section-content">
+                <div class="disclaimer">
+                    <strong>! Carrier Status Information</strong>
+                    Being a carrier typically means you have one copy of a recessive mutation. Carriers usually do not have symptoms but can pass the mutation to children. Genetic counseling recommended for family planning.
+                </div>
+
+                <div class="subsection">
+                    <div class="subsection-title">CARRIER STATUS SUMMARY</div>
+                    <table>
+                        <tr>
+                            <th>Condition</th>
+                            <th>Gene</th>
+                            <th>Mutation</th>
+                            <th>Genotype</th>
+                            <th>Status</th>
+                        </tr>
+                        <tr>
+                            <td>Hereditary Cancer</td>
+                            <td>BRCA1</td>
+                            <td>185delAG</td>
+                            <td class="geno">II</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Hereditary Cancer</td>
+                            <td>BRCA2</td>
+                            <td>6174delT</td>
+                            <td class="geno">II</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Hemochromatosis</td>
+                            <td>HFE</td>
+                            <td>H63D</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>Hemochromatosis</td>
+                            <td>HFE</td>
+                            <td>C282Y</td>
+                            <td class="geno">GA</td>
+                            <td class="status-info">Carrier (1 copy)</td>
+                        </tr>
+                        <tr>
+                            <td>Cystic Fibrosis</td>
+                            <td>CFTR</td>
+                            <td>deltaF508</td>
+                            <td class="geno">TT</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                        <tr>
+                            <td>PKU</td>
+                            <td>PAH</td>
+                            <td>R408W</td>
+                            <td class="geno">GG</td>
+                            <td class="status-normal">Normal</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const target = document.querySelector(targetId);
+                if (target) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        const sections = document.querySelectorAll('section, .status-box');
+        const navLinks = document.querySelectorAll('nav a');
+
+        function updateActiveNav() {
+            const headerHeight = document.querySelector('header').offsetHeight;
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - headerHeight - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav();
+    </script>
+</body>
+</html>
+

@@ -12,6 +12,8 @@ Traditional DNA analysis tools give you static reports. With Claude, you get:
 - **Personalized context** — Discuss how results apply to your specific situation
 - **Research deep-dives** — Ask Claude to explain the science behind any marker
 
+![DNA Terminal Demo](webpage/demo.png)
+
 ## Quick Start
 
 1. Export raw data from your DNA testing service (see [Supported Services](#supported-dna-testing-services))
@@ -97,6 +99,28 @@ You: What's the current research on rs1801133?
 You: How reliable are these SNP associations? What's the evidence quality?
 ```
 
+### Generating Webpage
+
+```
+You: Run all analysis scripts
+
+Claude: *runs 17 analysis scripts, generates reports/*
+
+You: Generate DNA Terminal webpage
+
+Claude: *reads reports, creates webpage/dna_terminal.html*
+
+You: Open the webpage in browser
+
+Claude: *opens file in default browser*
+```
+
+### Full Pipeline (One Command)
+
+```
+You: Run complete DNA analysis pipeline — all scripts, then generate webpage
+```
+
 ## Project Structure
 
 ```
@@ -105,8 +129,13 @@ dna-claude-analysis/
 │   ├── README.md            # Instructions for data placement
 │   └── your_genome.txt      # ← Put your DNA file here
 ├── scripts/
-│   └── *.py                 # Analysis scripts
-├── reports/                 # Generated reports (created automatically)
+│   └── *_analysis.py        # Analysis scripts (17 categories)
+├── reports/                 # Generated markdown reports
+├── webpage/
+│   ├── STYLE_GUIDE.md       # Terminal UI design system
+│   └── dna_terminal.html    # ← Generated webpage
+├── .claude/                 # Claude project settings
+├── CLAUDE.md                # Project instructions for Claude
 ├── .gitignore               # Keeps your data private
 └── README.md
 ```
@@ -146,13 +175,101 @@ GENOME_FILE = f"{BASE_PATH}/data/genome_John_Doe_v5_Full_20240101.txt"
 │  (600K SNPs)    │     │  (analyze SNPs) │     │  (findings)     │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
                                                         │
-                                                        ▼
-                                               ┌─────────────────┐
-                                               │     Claude      │
-                                               │  (explain,      │
-                                               │   contextualize,│
-                                               │   answer Qs)    │
-                                               └─────────────────┘
+                                    ┌───────────────────┴───────────────────┐
+                                    ▼                                       ▼
+                           ┌─────────────────┐                     ┌─────────────────┐
+                           │     Claude      │                     │  DNA TERMINAL   │
+                           │  (explain,      │                     │  (interactive   │
+                           │   contextualize,│                     │   webpage)      │
+                           │   answer Qs)    │                     │                 │
+                           └─────────────────┘                     └─────────────────┘
+```
+
+## Generate Interactive Webpage
+
+After running analysis scripts, Claude can generate a beautiful **DNA Terminal** webpage — a single-file HTML visualization with terminal/hacker aesthetic.
+
+### Quick Start
+
+```
+You: Generate DNA Terminal webpage from the reports
+
+Claude: *reads all reports, creates webpage/dna_terminal.html*
+```
+
+### What You Get
+
+- **Single HTML file** — No dependencies, works offline
+- **Terminal aesthetic** — Matrix-style green-on-black interface
+- **Fixed navigation** — Jump between sections
+- **Color-coded risks** — Green (good), amber (warning), red (risk)
+- **Mobile responsive** — Works on any device
+
+### Style Guide
+
+See `webpage/STYLE_GUIDE.md` for complete design system:
+- Color palette and typography
+- Component library (tables, charts, findings)
+- Section structure and IDs
+- Build instructions
+
+### Example Output
+
+![DNA Terminal Demo](webpage/demo.png)
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│ > DNA TERMINAL v1.0              2026-01-06 16:29 | Username   │
+│ [STATUS] [ANCESTRY] [HEALTH] [NUTRITION] [SPORTS] ...         │
+├────────────────────────────────────────────────────────────────┤
+│ // SYSTEM STATUS                                               │
+│ GENOME: 23andMe v5 | SNPs: 640,352 | COVERAGE: 98.2%           │
+│                                                                │
+│ ! MTHFR C677T heterozygous — reduced folate metabolism         │
+│ + ACTN3 RR — sprint/power advantage                            │
+├────────────────────────────────────────────────────────────────┤
+│ // HEALTH                                               [GOOD] │
+│ ┌──────────────┬──────────┬─────────────────────────────────┐  │
+│ │ GENE         │ GENOTYPE │ STATUS                          │  │
+│ ├──────────────┼──────────┼─────────────────────────────────┤  │
+│ │ APOE         │ ε3/ε3    │ TYPICAL RISK                    │  │
+│ │ BRCA1        │ NEGATIVE │ NO VARIANTS DETECTED            │  │
+│ └──────────────┴──────────┴─────────────────────────────────┘  │
+└────────────────────────────────────────────────────────────────┘
+```
+
+## Complete Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                     DNA ANALYSIS PIPELINE                           │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  STEP 1: DATA                                                       │
+│  ─────────────────                                                  │
+│  • Export raw DNA from 23andMe/Ancestry/etc                         │
+│  • Place in data/ folder                                            │
+│  • Tell Claude: "Use my file: data/genome.txt"                      │
+│                                                                     │
+│  STEP 2: ANALYSIS                                                   │
+│  ─────────────────                                                  │
+│  • "Run health analysis" — single script                            │
+│  • "Run all analysis scripts" — full pipeline                       │
+│  • Reports saved to reports/*.md                                    │
+│                                                                     │
+│  STEP 3: EXPLORE                                                    │
+│  ─────────────────                                                  │
+│  • Ask questions about any finding                                  │
+│  • "What does my APOE status mean?"                                 │
+│  • "How does this affect my diet?"                                  │
+│                                                                     │
+│  STEP 4: VISUALIZE                                                  │
+│  ─────────────────                                                  │
+│  • "Generate DNA Terminal webpage"                                  │
+│  • Opens interactive HTML dashboard                                 │
+│  • Terminal aesthetic with navigation                               │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Tips for Best Results
